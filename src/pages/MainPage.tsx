@@ -142,7 +142,6 @@ function MainPage() {
       localStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
     }
   };
-  // console.log(searchedImages);
 
   return (
     <div className="main-page">
@@ -163,29 +162,16 @@ function MainPage() {
         <h1>Most Popoular Fotos</h1>
       )}
       <div className="image-container">
-        {searchInput.current.value !== ""
-          ? searchedImages?.map((image) => {
-              return (
-                <img
-                  onClick={() => openModal(image)}
-                  src={image.urls.regular}
-                  alt={image.alt_description}
-                  key={image.id}
-                />
-              );
-            })
-          : images?.map((image) => {
-              // console.log(image);
-
-              return (
-                <img
-                  onClick={() => openModal(image)}
-                  src={image.urls.regular}
-                  alt={image.alt_description}
-                  key={image.id}
-                />
-              );
-            })}
+        {(searchInput.current.value !== "" ? searchedImages : images)?.map(
+          (image) => (
+            <img
+              onClick={() => openModal(image)}
+              src={image.urls.regular}
+              alt={image.alt_description}
+              key={image.id}
+            />
+          )
+        )}
       </div>
     </div>
   );

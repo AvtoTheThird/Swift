@@ -6,7 +6,7 @@ import Modal from "./Modal";
 function History() {
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [images, setImages] = useState<any[]>([]);
-  const [term, setTerm] = useState<string>("");
+  const [termState, setTermState] = useState<string>("");
   const [modalOpen, setModalOpen] = useState(false);
   const [modalImage, setModalImage] = useState("");
 
@@ -18,8 +18,8 @@ function History() {
     }
   }, []);
   const handleSearch = (term: string) => {
-    // event.preventDefault();
-    setTerm(term);
+    setTermState(term);
+
     const nextPage = Math.ceil(images.length / 20) + 1;
 
     axios
@@ -35,16 +35,18 @@ function History() {
       })
       .then((response) => {
         const newImages = response.data;
-        setImages([...images, ...newImages.results]);
-        // setImages(() => response.data.results);
-
-        // console.log("Photos with search term:", searchedImages);
+        if (term != termState) {
+          setImages(newImages.results);
+          console.log(images);
+        } else {
+          setImages([...images, ...newImages.results]);
+        }
       })
       .catch((error) => {
         console.error("Error fetching photos with search term:", error);
       });
-    //save search term to the local storage
   };
+
   function debounce(func: () => void, delay: number) {
     let timeoutId: ReturnType<typeof setTimeout>;
     return () => {
@@ -56,7 +58,7 @@ function History() {
     "scroll",
     debounce(() => {
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        handleSearch(term);
+        handleSearch(termState);
       }
     }, 500)
   );
